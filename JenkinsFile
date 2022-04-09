@@ -1,7 +1,7 @@
 pipeline{
   agent any  
     tools{
-      maven 'maven'
+      maven 'mavenpro'
       jdk 'JDK11'
     }
 
@@ -43,12 +43,12 @@ pipeline{
      steps{
      
      rtUpload (
-    serverId: 'ARTIFACTORY_SERVER',
+    serverId: 'jfrog-thanvi',
     spec: '''{
           "files": [
             {
               "pattern": "target/*.jar",
-              "target": "art-doc-dev-loc"
+              "target": "tm-pipeline"
             }
          ]
     }''',
@@ -62,12 +62,12 @@ pipeline{
             steps{
      
                 rtDownload (
-                    serverId: 'ARTIFACTORY_SERVER',
+                    serverId: 'jfrog-thanvi',
                     spec: '''{
                     "files": [
                          {
                              "pattern": "art-doc-dev-loc/",
-                             "target": ""
+                             "target": "tm-pipeline"
                         }
                      ]
                 }''',
@@ -77,6 +77,23 @@ pipeline{
      
     
   }
- 
-  }
-
+   post {  
+         always {  
+             echo 'This will always run'  
+         }  
+         success {   
+            echo "========Deploying executed successfully========"
+            emailext attachLog: true, body: "<b>Example</b><br>Project: ${env.JOB_NAME}", from: 'j92116580@gmail.com',compressLog: true, mimeType: 'text/html', replyTo: '', subject: "Deploy Successfull Project ${env.JOB_NAME}", to: "j92116580@gmail.com";
+         }  
+         failure {  
+             mail bcc: '', body: "<b>Example</b><br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> Stage Name: $last_started <br> URL de build: ${env.BUILD_URL}", cc: 'ramji013@gmail.com', charset: 'UTF-8', from: 'j92116580@gmail.com', mimeType: 'text/html', replyTo: '', subject: "Deployment failed for Project -> ${env.JOB_NAME}", to: "j92116580@gmail.com";  
+         }  
+         unstable {  
+             echo 'This will run only if the run was marked as unstable'  
+         }  
+         changed {  
+             echo 'This will run only if the state of the Pipeline has changed'   
+             echo 'For example, if the Pipeline was previously failing but is now successful'  
+         }  
+     }
+}
