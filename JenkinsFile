@@ -33,7 +33,7 @@ pipeline{
           "files": [
             {
               "pattern": "target/*.jar",
-              "target": "tm-pipeline"
+              "target": "sampleteam"
             }
          ]
     }''',
@@ -52,7 +52,7 @@ pipeline{
                     "files": [
                          {
                              "pattern": "art-doc-dev-loc/",
-                             "target": "tm-pipeline"
+                             "target": "sampleteam"
                         }
                      ]
                 }''',
